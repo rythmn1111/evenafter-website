@@ -1,4 +1,5 @@
 import { Unbounded, Spectral } from "next/font/google";
+import { useState } from "react";
 
 const unbounded = Unbounded({
   subsets: ["latin"],
@@ -12,6 +13,39 @@ const spectral = Spectral({
 });
 
 export default function MainContent() {
+  const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setMessage('');
+
+    try {
+      const response = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage('Successfully joined the waitlist!');
+        setEmail('');
+      } else {
+        setMessage(data.message || 'Something went wrong');
+      }
+    } catch (error) {
+      setMessage('Network error. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="w-full min-h-screen flex flex-col items-center justify-start px-16 pt-50 mx-auto max-w-6xl">
       {/* Main heading */}
@@ -30,16 +64,32 @@ export default function MainContent() {
       </p>
       
       {/* Email subscription form */}
-      <div className="flex flex-col sm:flex-row gap-4 items-center max-w-md w-full">
+      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 items-center max-w-md w-full">
         <input
           type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           placeholder="enter your email"
+          required
           className="flex-1 px-4 py-3 rounded-lg bg-gray-200 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
         />
-        <button className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-8 py-3 rounded-lg transition-colors duration-200 uppercase tracking-wide">
-          JOIN
+        <button 
+          type="submit"
+          disabled={isLoading}
+          className="bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 text-white font-bold px-8 py-3 rounded-lg transition-colors duration-200 uppercase tracking-wide"
+        >
+          {isLoading ? 'JOINING...' : 'JOIN'}
         </button>
-      </div>
+      </form>
+      
+      {/* Message display */}
+      {message && (
+        <div className={`mt-4 text-center text-sm ${
+          message.includes('Successfully') ? 'text-green-300' : 'text-red-300'
+        }`}>
+          {message}
+        </div>
+      )}
     </div>
   );
 }
