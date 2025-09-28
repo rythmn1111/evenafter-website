@@ -47,7 +47,7 @@ export default function MainContent() {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center justify-start px-16 pt-50 mx-auto max-w-6xl">
+    <div className="w-full min-h-screen flex flex-col items-center justify-center px-16 mx-auto max-w-6xl">
       {/* Main heading */}
       <div className="text-center mb-8">
         <h1 className={`${unbounded.className} text-white font-black text-3xl md:text-5xl mb-6 uppercase tracking-wider drop-shadow-2xl transform hover:scale-105 transition-transform duration-300`}>
