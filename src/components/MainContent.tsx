@@ -39,7 +39,7 @@ export default function MainContent() {
       } else {
         setMessage(data.message || 'Something went wrong');
       }
-    } catch (error) {
+    } catch {
       setMessage('Network error. Please try again.');
     } finally {
       setIsLoading(false);

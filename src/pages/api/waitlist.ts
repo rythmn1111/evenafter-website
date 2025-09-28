@@ -20,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     // Check if email already exists
-    const { data: existingUser, error: checkError } = await supabase
+    const { data: existingUser } = await supabase
       .from('email')
       .select('email')
       .eq('email', email)
